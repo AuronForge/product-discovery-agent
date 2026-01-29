@@ -99,7 +99,7 @@ describe('ProductDiscoveryService', () => {
     };
 
     it('should execute discovery successfully', async () => {
-      mockLanguageDetector.detect.mockReturnValue('en');
+      mockLanguageDetector.detect.mockResolvedValue('en');
       mockAIProvider.generateDiscovery.mockResolvedValue(mockSolution);
 
       const result = await service.executeDiscovery(validRequest);
@@ -119,7 +119,7 @@ describe('ProductDiscoveryService', () => {
         problem:
           'Precisamos de um sistema para gerenciar relacionamento com clientes'
       };
-      mockLanguageDetector.detect.mockReturnValue('pt');
+      mockLanguageDetector.detect.mockResolvedValue('pt');
       mockAIProvider.generateDiscovery.mockResolvedValue(mockSolution);
 
       await service.executeDiscovery(portugueseRequest);
@@ -159,7 +159,7 @@ describe('ProductDiscoveryService', () => {
 
     it('should throw error when solution name is missing', async () => {
       const invalidSolution = { ...mockSolution, name: '' };
-      mockLanguageDetector.detect.mockReturnValue('en');
+      mockLanguageDetector.detect.mockResolvedValue('en');
       mockAIProvider.generateDiscovery.mockResolvedValue(invalidSolution);
 
       await expect(service.executeDiscovery(validRequest)).rejects.toThrow(
@@ -169,7 +169,7 @@ describe('ProductDiscoveryService', () => {
 
     it('should throw error when solution description is missing', async () => {
       const invalidSolution = { ...mockSolution, solution: '' };
-      mockLanguageDetector.detect.mockReturnValue('en');
+      mockLanguageDetector.detect.mockResolvedValue('en');
       mockAIProvider.generateDiscovery.mockResolvedValue(invalidSolution);
 
       await expect(service.executeDiscovery(validRequest)).rejects.toThrow(
@@ -179,7 +179,7 @@ describe('ProductDiscoveryService', () => {
 
     it('should throw error when epics array is not present', async () => {
       const invalidSolution = { ...mockSolution, epics: null as any };
-      mockLanguageDetector.detect.mockReturnValue('en');
+      mockLanguageDetector.detect.mockResolvedValue('en');
       mockAIProvider.generateDiscovery.mockResolvedValue(invalidSolution);
 
       await expect(service.executeDiscovery(validRequest)).rejects.toThrow(
@@ -192,7 +192,7 @@ describe('ProductDiscoveryService', () => {
         ...mockSolution,
         epics: mockSolution.epics.slice(0, 3)
       };
-      mockLanguageDetector.detect.mockReturnValue('en');
+      mockLanguageDetector.detect.mockResolvedValue('en');
       mockAIProvider.generateDiscovery.mockResolvedValue(invalidSolution);
 
       await expect(service.executeDiscovery(validRequest)).rejects.toThrow(
@@ -206,7 +206,7 @@ describe('ProductDiscoveryService', () => {
         ...mockSolution,
         epics: manyEpics
       };
-      mockLanguageDetector.detect.mockReturnValue('en');
+      mockLanguageDetector.detect.mockResolvedValue('en');
       mockAIProvider.generateDiscovery.mockResolvedValue(invalidSolution);
 
       await expect(service.executeDiscovery(validRequest)).rejects.toThrow(
@@ -225,7 +225,7 @@ describe('ProductDiscoveryService', () => {
           }
         ]
       };
-      mockLanguageDetector.detect.mockReturnValue('en');
+      mockLanguageDetector.detect.mockResolvedValue('en');
       mockAIProvider.generateDiscovery.mockResolvedValue(invalidSolution);
 
       await expect(service.executeDiscovery(validRequest)).rejects.toThrow(
@@ -244,7 +244,7 @@ describe('ProductDiscoveryService', () => {
           }
         ]
       };
-      mockLanguageDetector.detect.mockReturnValue('en');
+      mockLanguageDetector.detect.mockResolvedValue('en');
       mockAIProvider.generateDiscovery.mockResolvedValue(invalidSolution);
 
       await expect(service.executeDiscovery(validRequest)).rejects.toThrow(
@@ -263,7 +263,7 @@ describe('ProductDiscoveryService', () => {
           }
         ]
       };
-      mockLanguageDetector.detect.mockReturnValue('en');
+      mockLanguageDetector.detect.mockResolvedValue('en');
       mockAIProvider.generateDiscovery.mockResolvedValue(invalidSolution);
 
       await expect(service.executeDiscovery(validRequest)).rejects.toThrow(
@@ -286,7 +286,7 @@ describe('ProductDiscoveryService', () => {
           }
         ]
       };
-      mockLanguageDetector.detect.mockReturnValue('en');
+      mockLanguageDetector.detect.mockResolvedValue('en');
       mockAIProvider.generateDiscovery.mockResolvedValue(invalidSolution);
 
       await expect(service.executeDiscovery(validRequest)).rejects.toThrow(
@@ -295,7 +295,7 @@ describe('ProductDiscoveryService', () => {
     });
 
     it('should handle AI provider errors', async () => {
-      mockLanguageDetector.detect.mockReturnValue('en');
+      mockLanguageDetector.detect.mockResolvedValue('en');
       mockAIProvider.generateDiscovery.mockRejectedValue(
         new Error('AI provider error')
       );
