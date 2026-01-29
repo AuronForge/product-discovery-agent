@@ -1,4 +1,3 @@
-import { Router } from 'express';
 import { createProductDiscoveryRoutes } from '../productDiscoveryRoutes';
 import { ProductDiscoveryController } from '../../controllers/ProductDiscoveryController';
 
@@ -7,7 +6,7 @@ const mockController = {
   executeDiscovery: jest.fn(),
   listDiscoveries: jest.fn(),
   getDiscoveryById: jest.fn(),
-  health: jest.fn(),
+  health: jest.fn()
 } as unknown as ProductDiscoveryController;
 
 describe('productDiscoveryRoutes', () => {
@@ -26,7 +25,7 @@ describe('productDiscoveryRoutes', () => {
         .filter((layer: any) => layer.route)
         .map((layer: any) => ({
           path: layer.route.path,
-          method: Object.keys(layer.route.methods)[0],
+          method: Object.keys(layer.route.methods)[0]
         }));
 
       const discoveryRoute = routes.find((r: any) => r.path === '/discovery');
@@ -40,7 +39,7 @@ describe('productDiscoveryRoutes', () => {
         .filter((layer: any) => layer.route)
         .map((layer: any) => ({
           path: layer.route.path,
-          method: Object.keys(layer.route.methods)[0],
+          method: Object.keys(layer.route.methods)[0]
         }));
 
       const listRoute = routes.find((r: any) => r.path === '/discoveries');
@@ -54,10 +53,12 @@ describe('productDiscoveryRoutes', () => {
         .filter((layer: any) => layer.route)
         .map((layer: any) => ({
           path: layer.route.path,
-          method: Object.keys(layer.route.methods)[0],
+          method: Object.keys(layer.route.methods)[0]
         }));
 
-      const getByIdRoute = routes.find((r: any) => r.path === '/discoveries/:id');
+      const getByIdRoute = routes.find(
+        (r: any) => r.path === '/discoveries/:id'
+      );
       expect(getByIdRoute).toBeDefined();
       expect(getByIdRoute.method).toBe('get');
     });
@@ -68,7 +69,7 @@ describe('productDiscoveryRoutes', () => {
         .filter((layer: any) => layer.route)
         .map((layer: any) => ({
           path: layer.route.path,
-          method: Object.keys(layer.route.methods)[0],
+          method: Object.keys(layer.route.methods)[0]
         }));
 
       const healthRoute = routes.find((r: any) => r.path === '/health');
