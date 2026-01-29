@@ -25,14 +25,14 @@ The main CI/CD pipeline runs on every push and pull request to `main` and `devel
 
 4. **Deploy Staging** - Deploys to staging environment
    - Triggers on push to `develop` branch
-   - Downloads build artifacts
-   - Deploys to staging server
+   - Deploys to Vercel preview environment
+   - Returns deployment URL
 
 5. **Deploy Production** - Deploys to production
    - Triggers on push to `main` branch
-   - Downloads build artifacts
-   - Deploys to production server
+   - Deploys to Vercel production environment
    - Creates release notes
+   - Returns production URL
 
 6. **Docker** - Builds and pushes Docker image
    - Creates multi-platform Docker image
@@ -43,20 +43,30 @@ The main CI/CD pipeline runs on every push and pull request to `main` and `devel
 
 Configure these secrets in GitHub repository settings (Settings → Secrets and variables → Actions):
 
+### Vercel Deployment (Required)
+
+- `VERCEL_TOKEN` - Your Vercel authentication token (get from https://vercel.com/account/tokens)
+- `VERCEL_ORG_ID` - Your Vercel organization ID (found in `.vercel/project.json`)
+- `VERCEL_PROJECT_ID` - Your Vercel project ID (found in `.vercel/project.json`)
+
+### Application Secrets
+
+- `COPILOT_API_TOKEN` - GitHub Copilot API token (required for AI features)
+
 ### Optional Secrets
 
 - `CODECOV_TOKEN` - For uploading test coverage to Codecov
-- `DOCKER_USERNAME` - Docker Hub username
-- `DOCKER_PASSWORD` - Docker Hub password or access token
 
-### Deployment Secrets (add based on your deployment method)
+## Vercel Deployment
 
-- `HEROKU_API_KEY` - For Heroku deployment
-- `AWS_ACCESS_KEY_ID` - For AWS deployment
-- `AWS_SECRET_ACCESS_KEY` - For AWS deployment
-- `SSH_PRIVATE_KEY` - For SSH deployment
-- `DEPLOY_HOST` - Deployment server hostname
-- `DEPLOY_USER` - Deployment server username
+For detailed Vercel deployment instructions, see [VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md).
+
+### Quick Setup
+
+1. Install and link Vercel CLI: `vercel link`
+2. Get project IDs from `.vercel/project.json`
+3. Add secrets to GitHub repository
+4. Push to `develop` (staging) or `main` (production)
 
 ## Environments
 
@@ -186,9 +196,10 @@ Add these badges to your README:
 
 ### Deployment failing
 
-- Verify all required secrets are configured
-- Check deployment target is accessible
-- Review deployment logs in Actions tab
+- Verify all required secrets are configured (VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID)
+- Check Vercel project is linked correctly
+- Review deployment logs in Actions tab and Vercel dashboard
+- Ensure environment variables are set in Vercel project settings
 
 ## Best Practices
 

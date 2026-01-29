@@ -99,27 +99,32 @@ jobs:
     if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
     environment:
       name: staging
-      url: https://staging.yourdomain.com
+      url: ${{ steps.deploy.outputs.url }}
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          name: dist
-          path: dist/
+          node-version: '20'
       
-      - name: Deploy to Staging
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+      
+      - name: Build Project Artifacts
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+      
+      - name: Deploy to Vercel (Staging)
+        id: deploy
         run: |
-          echo "Deploying to staging environment..."
-          # Add your deployment commands here
-          # Examples:
-          # - Deploy to Heroku: git push heroku develop:main
-          # - Deploy to AWS: aws s3 sync dist/ s3://your-bucket
-          # - Deploy to Docker Registry: docker push your-registry/app:staging
-          # - Deploy via SSH: rsync -avz dist/ user@staging-server:/app
+          url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          echo "url=$url" >> $GITHUB_OUTPUT
+          echo "✅ Deployed to staging: $url"
 
   deploy-production:
     name: Deploy to Production
@@ -128,30 +133,36 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment:
       name: production
-      url: https://yourdomain.com
+      url: ${{ steps.deploy.outputs.url }}
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          name: dist
-          path: dist/
+          node-version: '20'
       
-      - name: Deploy to Production
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+      
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+      
+      - name: Deploy to Vercel (Production)
+        id: deploy
         run: |
-          echo "Deploying to production environment..."
-          # Add your deployment commands here
-          # Examples:
-          # - Deploy to Heroku: git push heroku main
-          # - Deploy to AWS: aws s3 sync dist/ s3://your-bucket
-          # - Deploy to Docker Registry: docker push your-registry/app:latest
-          # - Deploy via SSH: rsync -avz dist/ user@prod-server:/app
+          url=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          echo "url=$url" >> $GITHUB_OUTPUT
+          echo "✅ Deployed to production: $url"
       
       - name: Create Release Notes
         if: success()
         run: |
           echo "Deployment successful!"
           echo "Version: $(node -p "require('./package.json').version")"
+          echo "URL: ${{ steps.deploy.outputs.url }}"
