@@ -1,19 +1,15 @@
 {
   "version": 2,
-  "name": "product-discovery-agent",
   "builds": [
     {
-      "src": "dist/index.js",
+      "src": "package.json",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "dist/index.js"
+      "dest": "/"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  ]
 }
