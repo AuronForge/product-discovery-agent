@@ -160,6 +160,16 @@ jobs:
           echo "pr-exists=$PR_EXISTS" >> $GITHUB_OUTPUT
           echo "Existing PRs from develop to main: $PR_EXISTS"
       
+      - name: Create labels if they don't exist
+        if: steps.check-pr.outputs.pr-exists == '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+        run: |
+          gh label create "release" --description "Release to production" --color "0E8A16" || true
+          gh label create "automated" --description "Automated by CI/CD" --color "FBCA04" || true
+          gh label create "staging-approved" --description "Approved in staging" --color "0075CA" || true
+      
       - name: Create Pull Request to Main
         if: steps.check-pr.outputs.pr-exists == '0'
         env:
