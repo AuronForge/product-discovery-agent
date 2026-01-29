@@ -18,9 +18,9 @@ const startServer = () => {
     console.log('════════════════════════════════════════════════════════');
     console.log(`📡 Server running on: http://localhost:${PORT}`);
     console.log(`📚 API Documentation: http://localhost:${PORT}/docs`);
-    console.log(`🏥 Health Check: http://localhost:${PORT}/api/health`);
+    console.log(`🏥 Health Check: http://localhost:${PORT}/api/v1/health`);
     console.log(
-      `🔍 Discovery Endpoint: POST http://localhost:${PORT}/api/discovery`
+      `🔍 Discovery Endpoint: POST http://localhost:${PORT}/api/v1/discovery`
     );
     console.log('════════════════════════════════════════════════════════');
     console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
