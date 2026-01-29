@@ -25,10 +25,14 @@ export const createApp = (): Express => {
   });
 
   // Swagger documentation
-  app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
-    customCss: '.swagger-ui .topbar { display: none }',
-    customSiteTitle: 'Product Discovery Agent API'
-  }));
+  app.use(
+    '/docs',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec, {
+      customCss: '.swagger-ui .topbar { display: none }',
+      customSiteTitle: 'Product Discovery Agent API'
+    })
+  );
 
   // Swagger JSON endpoint
   app.get('/swagger.json', (_req, res) => {
@@ -48,7 +52,8 @@ export const createApp = (): Express => {
     res.json({
       name: 'Product Discovery Agent API',
       version: '1.0.0',
-      description: 'A backend agent that performs macro-level product discovery using AI',
+      description:
+        'A backend agent that performs macro-level product discovery using AI',
       endpoints: {
         documentation: '/docs',
         swagger: '/swagger.json',

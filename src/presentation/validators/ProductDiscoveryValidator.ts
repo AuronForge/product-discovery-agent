@@ -14,4 +14,6 @@ export const ProductDiscoveryRequestSchema = z.object({
 /**
  * Type inference from schema
  */
-export type ProductDiscoveryRequestDTO = z.infer<typeof ProductDiscoveryRequestSchema>;
+export type ProductDiscoveryRequestDTO = z.infer<
+  typeof ProductDiscoveryRequestSchema
+>;

@@ -12,14 +12,18 @@ export interface IProductDiscoveryRepository {
    * @param language - The detected language of the request
    * @returns The ID of the saved discovery
    */
-  save(solution: ProductDiscoverySolution, problem: string, language: string): Promise<string>;
+  save(
+    solution: ProductDiscoverySolution,
+    problem: string,
+    language: string
+  ): Promise<string>;
 
   /**
    * Find a discovery by its ID
    * @param id - The discovery ID
    * @returns The discovery solution or null if not found
    */
-  findById(id: string): Promise<{ 
+  findById(id: string): Promise<{
     id: string;
     solution: ProductDiscoverySolution;
     problem: string;
@@ -33,13 +37,18 @@ export interface IProductDiscoveryRepository {
    * @param offset - Number of records to skip
    * @returns Array of discoveries
    */
-  findAll(limit: number, offset: number): Promise<Array<{
-    id: string;
-    solution: ProductDiscoverySolution;
-    problem: string;
-    language: string;
-    createdAt: Date;
-  }>>;
+  findAll(
+    limit: number,
+    offset: number
+  ): Promise<
+    Array<{
+      id: string;
+      solution: ProductDiscoverySolution;
+      problem: string;
+      language: string;
+      createdAt: Date;
+    }>
+  >;
 
   /**
    * Count total discoveries in the database

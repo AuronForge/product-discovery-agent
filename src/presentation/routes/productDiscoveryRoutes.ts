@@ -6,7 +6,9 @@ import { ProductDiscoveryController } from '../controllers/ProductDiscoveryContr
  * @param controller - Product Discovery Controller instance
  * @returns Configured Express Router
  */
-export const createProductDiscoveryRoutes = (controller: ProductDiscoveryController): Router => {
+export const createProductDiscoveryRoutes = (
+  controller: ProductDiscoveryController
+): Router => {
   const router = Router();
 
   /**

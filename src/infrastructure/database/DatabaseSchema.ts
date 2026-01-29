@@ -10,8 +10,9 @@ export class DatabaseSchema {
 
   constructor(dbPath?: string) {
     // Default to data/discoveries.db
-    const finalPath = dbPath || path.join(process.cwd(), 'data', 'discoveries.db');
-    
+    const finalPath =
+      dbPath || path.join(process.cwd(), 'data', 'discoveries.db');
+
     // Ensure directory exists
     const dir = path.dirname(finalPath);
     const fs = require('fs');

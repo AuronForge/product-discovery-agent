@@ -8,12 +8,12 @@ import { franc } from 'franc';
  */
 export class LanguageDetector implements ILanguageDetector {
   private readonly languageMap: Record<string, LanguageCode> = {
-    'eng': 'en',
-    'por': 'pt',
-    'spa': 'es',
-    'fra': 'fr',
-    'deu': 'de',
-    'ita': 'it'
+    eng: 'en',
+    por: 'pt',
+    spa: 'es',
+    fra: 'fr',
+    deu: 'de',
+    ita: 'it'
   };
 
   /**
@@ -29,7 +29,7 @@ export class LanguageDetector implements ILanguageDetector {
     try {
       // franc returns ISO 639-3 codes
       const detectedCode = franc(text, { minLength: 10 });
-      
+
       if (detectedCode === 'und') {
         return 'unknown';
       }

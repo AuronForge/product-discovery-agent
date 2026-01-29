@@ -10,7 +10,7 @@ describe('ProductDiscoveryRepository', () => {
   beforeEach(() => {
     // Create in-memory database for testing
     db = new Database(':memory:');
-    
+
     // Create tables
     db.exec(`
       CREATE TABLE discoveries (
@@ -61,7 +61,11 @@ describe('ProductDiscoveryRepository', () => {
         id: uuidv4(),
         name: 'Product Management',
         description: 'Manage products and inventory',
-        requirements: ['CRUD operations', 'Search functionality', 'Image upload'],
+        requirements: [
+          'CRUD operations',
+          'Search functionality',
+          'Image upload'
+        ],
         priority: 'P0',
         type: 'Time de desenvolvimento'
       },
@@ -88,31 +92,47 @@ describe('ProductDiscoveryRepository', () => {
       expect(typeof discoveryId).toBe('string');
 
       // Verify discovery was saved
-      const discovery = db.prepare('SELECT * FROM discoveries WHERE id = ?').get(discoveryId);
+      const discovery = db
+        .prepare('SELECT * FROM discoveries WHERE id = ?')
+        .get(discoveryId);
       expect(discovery).toBeDefined();
       expect((discovery as any).name).toBe('E-Commerce Platform');
 
       // Verify epics were saved
-      const epics = db.prepare('SELECT * FROM epics WHERE discovery_id = ?').all(discoveryId);
+      const epics = db
+        .prepare('SELECT * FROM epics WHERE discovery_id = ?')
+        .all(discoveryId);
       expect(epics).toHaveLength(2);
 
       // Verify requirements were saved
-      const requirements = db.prepare(`
+      const requirements = db
+        .prepare(
+          `
         SELECT r.* FROM requirements r
         INNER JOIN epics e ON r.epic_id = e.id
         WHERE e.discovery_id = ?
-      `).all(discoveryId);
+      `
+        )
+        .all(discoveryId);
       expect(requirements).toHaveLength(6); // 3 + 3 requirements
     });
 
     it('should maintain epic order', async () => {
-      const discoveryId = await repository.save(mockSolution, 'Test problem', 'en');
+      const discoveryId = await repository.save(
+        mockSolution,
+        'Test problem',
+        'en'
+      );
 
-      const epics = db.prepare(`
+      const epics = db
+        .prepare(
+          `
         SELECT name, epic_order FROM epics 
         WHERE discovery_id = ? 
         ORDER BY epic_order
-      `).all(discoveryId) as Array<{ name: string; epic_order: number }>;
+      `
+        )
+        .all(discoveryId) as Array<{ name: string; epic_order: number }>;
 
       expect(epics[0].name).toBe('Product Management');
       expect(epics[0].epic_order).toBe(0);
@@ -253,7 +273,9 @@ describe('ProductDiscoveryRepository', () => {
 
       await repository.deleteById(savedId);
 
-      const epics = db.prepare('SELECT * FROM epics WHERE discovery_id = ?').all(savedId);
+      const epics = db
+        .prepare('SELECT * FROM epics WHERE discovery_id = ?')
+        .all(savedId);
       expect(epics).toHaveLength(0);
 
       // Requirements should also be deleted (cascade)

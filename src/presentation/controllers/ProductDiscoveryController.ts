@@ -8,7 +8,9 @@ import { ProductDiscoveryRequestSchema } from '../validators/ProductDiscoveryVal
  * Follows Controller pattern from Clean Architecture
  */
 export class ProductDiscoveryController {
-  constructor(private readonly productDiscoveryService: IProductDiscoveryService) {}
+  constructor(
+    private readonly productDiscoveryService: IProductDiscoveryService
+  ) {}
 
   /**
    * Handle POST /discovery request
@@ -21,7 +23,8 @@ export class ProductDiscoveryController {
       const validatedRequest = ProductDiscoveryRequestSchema.parse(req.body);
 
       // Execute discovery service
-      const solution = await this.productDiscoveryService.executeDiscovery(validatedRequest);
+      const solution =
+        await this.productDiscoveryService.executeDiscovery(validatedRequest);
 
       // Return JSON response
       res.status(200).json(solution);
@@ -54,7 +57,10 @@ export class ProductDiscoveryController {
       const limit = parseInt(req.query.limit as string) || 10;
       const offset = parseInt(req.query.offset as string) || 0;
 
-      const result = await this.productDiscoveryService.listDiscoveries(limit, offset);
+      const result = await this.productDiscoveryService.listDiscoveries(
+        limit,
+        offset
+      );
 
       res.status(200).json(result);
     } catch (error) {

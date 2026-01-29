@@ -1,6 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
-import { ValidationError, AIProviderError, BusinessError } from '../errors/CustomErrors';
+import {
+  ValidationError,
+  AIProviderError,
+  BusinessError
+} from '../errors/CustomErrors';
 
 /**
  * Global error handler middleware

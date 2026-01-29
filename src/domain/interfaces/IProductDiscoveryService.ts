@@ -1,4 +1,7 @@
-import { ProductDiscoverySolution, ProductDiscoveryRequest } from '../models/ProductDiscovery';
+import {
+  ProductDiscoverySolution,
+  ProductDiscoveryRequest
+} from '../models/ProductDiscovery';
 
 /**
  * Interface for the Product Discovery Service
@@ -10,7 +13,9 @@ export interface IProductDiscoveryService {
    * @param request - The product discovery request
    * @returns Promise with the discovery solution
    */
-  executeDiscovery(request: ProductDiscoveryRequest): Promise<ProductDiscoverySolution>;
+  executeDiscovery(
+    request: ProductDiscoveryRequest
+  ): Promise<ProductDiscoverySolution>;
 
   /**
    * List all discoveries with pagination
@@ -18,7 +23,10 @@ export interface IProductDiscoveryService {
    * @param offset - Number of records to skip
    * @returns Promise with array of discoveries and total count
    */
-  listDiscoveries(limit?: number, offset?: number): Promise<{
+  listDiscoveries(
+    limit?: number,
+    offset?: number
+  ): Promise<{
     discoveries: Array<{
       id: string;
       name: string;

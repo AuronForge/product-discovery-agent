@@ -90,8 +90,10 @@ Epics are prioritized using:
             },
             solution: {
               type: 'string',
-              description: 'Detailed solution description covering approach, value proposition, and key benefits',
-              example: 'A comprehensive CRM system that streamlines customer interactions, tracks sales opportunities, and provides actionable insights through advanced analytics.'
+              description:
+                'Detailed solution description covering approach, value proposition, and key benefits',
+              example:
+                'A comprehensive CRM system that streamlines customer interactions, tracks sales opportunities, and provides actionable insights through advanced analytics.'
             },
             epics: {
               type: 'array',
@@ -106,7 +108,14 @@ Epics are prioritized using:
         },
         Epic: {
           type: 'object',
-          required: ['id', 'name', 'description', 'requirements', 'priority', 'type'],
+          required: [
+            'id',
+            'name',
+            'description',
+            'requirements',
+            'priority',
+            'type'
+          ],
           properties: {
             id: {
               type: 'string',
@@ -121,21 +130,30 @@ Epics are prioritized using:
             },
             description: {
               type: 'string',
-              description: 'Detailed description covering intent, scope, and value delivered',
-              example: 'Enable comprehensive customer data management with CRUD operations, data validation, and GDPR compliance to provide a centralized source of truth for customer information.'
+              description:
+                'Detailed description covering intent, scope, and value delivered',
+              example:
+                'Enable comprehensive customer data management with CRUD operations, data validation, and GDPR compliance to provide a centralized source of truth for customer information.'
             },
             requirements: {
               type: 'array',
-              description: 'List of requirements (business, functional, non-functional, acceptance criteria)',
+              description:
+                'List of requirements (business, functional, non-functional, acceptance criteria)',
               minItems: 1,
               items: {
                 type: 'string',
-                example: 'Implement CRUD operations for customer records with validation'
+                example:
+                  'Implement CRUD operations for customer records with validation'
               }
             },
             priority: {
               type: 'string',
-              enum: ['P0 (Must)', 'P1 (Should)', 'P2 (Could)', 'P3 (Won\'t now)'],
+              enum: [
+                'P0 (Must)',
+                'P1 (Should)',
+                'P2 (Could)',
+                "P3 (Won't now)"
+              ],
               description: 'MoSCoW prioritization level',
               example: 'P0 (Must)'
             },
@@ -177,7 +195,8 @@ Epics are prioritized using:
                   },
                   message: {
                     type: 'string',
-                    example: 'Problem description must be at least 10 characters long'
+                    example:
+                      'Problem description must be at least 10 characters long'
                   }
                 }
               }

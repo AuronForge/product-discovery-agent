@@ -2,7 +2,10 @@ import { IProductDiscoveryService } from '../../domain/interfaces/IProductDiscov
 import { IAIProvider } from '../../domain/interfaces/IAIProvider';
 import { ILanguageDetector } from '../../domain/interfaces/ILanguageDetector';
 import { IProductDiscoveryRepository } from '../../domain/repositories/IProductDiscoveryRepository';
-import { ProductDiscoverySolution, ProductDiscoveryRequest } from '../../domain/models/ProductDiscovery';
+import {
+  ProductDiscoverySolution,
+  ProductDiscoveryRequest
+} from '../../domain/models/ProductDiscovery';
 
 /**
  * Product Discovery Service implementation
@@ -25,7 +28,9 @@ export class ProductDiscoveryService implements IProductDiscoveryService {
    * @param request - Product discovery request
    * @returns Product discovery solution
    */
-  async executeDiscovery(request: ProductDiscoveryRequest): Promise<ProductDiscoverySolution> {
+  async executeDiscovery(
+    request: ProductDiscoveryRequest
+  ): Promise<ProductDiscoverySolution> {
     // Validate input
     this.validateRequest(request);
 
@@ -33,14 +38,21 @@ export class ProductDiscoveryService implements IProductDiscoveryService {
     const detectedLanguage = this.languageDetector.detect(request.problem);
 
     // Generate discovery solution using AI
-    const solution = await this.aiProvider.generateDiscovery(request, detectedLanguage);
+    const solution = await this.aiProvider.generateDiscovery(
+      request,
+      detectedLanguage
+    );
 
     // Validate output
     this.validateSolution(solution);
 
     // Persist to database
     try {
-      const discoveryId = await this.repository.save(solution, request.problem, detectedLanguage);
+      const discoveryId = await this.repository.save(
+        solution,
+        request.problem,
+        detectedLanguage
+      );
       console.log(`✅ Discovery saved to database with ID: ${discoveryId}`);
     } catch (error) {
       console.error('Failed to persist discovery to database:', error);
@@ -61,11 +73,15 @@ export class ProductDiscoveryService implements IProductDiscoveryService {
     }
 
     if (request.problem.trim().length < 10) {
-      throw new Error('Problem description is too short (minimum 10 characters)');
+      throw new Error(
+        'Problem description is too short (minimum 10 characters)'
+      );
     }
 
     if (request.problem.trim().length > 5000) {
-      throw new Error('Problem description is too long (maximum 5000 characters)');
+      throw new Error(
+        'Problem description is too long (maximum 5000 characters)'
+      );
     }
   }
 
@@ -102,16 +118,26 @@ export class ProductDiscoveryService implements IProductDiscoveryService {
       }
 
       if (!Array.isArray(epic.requirements) || epic.requirements.length === 0) {
-        throw new Error(`Epic "${epic.name}" must have at least one requirement`);
+        throw new Error(
+          `Epic "${epic.name}" must have at least one requirement`
+        );
       }
 
       // Accept both formats: "P0 (Must)" or "P0"
       const validPriorities = [
-        'P0 (Must)', 'P1 (Should)', 'P2 (Could)', 'P3 (Won\'t now)',
-        'P0', 'P1', 'P2', 'P3'
+        'P0 (Must)',
+        'P1 (Should)',
+        'P2 (Could)',
+        "P3 (Won't now)",
+        'P0',
+        'P1',
+        'P2',
+        'P3'
       ];
       if (!validPriorities.includes(epic.priority)) {
-        throw new Error(`Epic "${epic.name}" has invalid priority: ${epic.priority}`);
+        throw new Error(
+          `Epic "${epic.name}" has invalid priority: ${epic.priority}`
+        );
       }
 
       const validTypes = [
@@ -129,7 +155,10 @@ export class ProductDiscoveryService implements IProductDiscoveryService {
   /**
    * List all discoveries with pagination
    */
-  async listDiscoveries(limit: number = 10, offset: number = 0): Promise<{
+  async listDiscoveries(
+    limit: number = 10,
+    offset: number = 0
+  ): Promise<{
     discoveries: Array<{
       id: string;
       name: string;

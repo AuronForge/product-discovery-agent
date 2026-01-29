@@ -1,7 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { errorHandler } from './errorHandler';
 import { ZodError } from 'zod';
-import { ValidationError, BusinessError, AIProviderError } from '../errors/CustomErrors';
+import {
+  ValidationError,
+  BusinessError,
+  AIProviderError
+} from '../errors/CustomErrors';
 
 describe('errorHandler', () => {
   let mockRequest: Partial<Request>;
@@ -157,7 +161,8 @@ describe('errorHandler', () => {
       expect(jsonMock).toHaveBeenCalledWith(
         expect.objectContaining({
           error: 'Service Unavailable',
-          message: 'AI provider is currently unavailable. Please try again later.'
+          message:
+            'AI provider is currently unavailable. Please try again later.'
         })
       );
     });
