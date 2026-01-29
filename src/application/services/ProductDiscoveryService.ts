@@ -35,7 +35,9 @@ export class ProductDiscoveryService implements IProductDiscoveryService {
     this.validateRequest(request);
 
     // Detect language from problem description
-    const detectedLanguage = this.languageDetector.detect(request.problem);
+    const detectedLanguage = await this.languageDetector.detect(
+      request.problem
+    );
 
     // Generate discovery solution using AI
     const solution = await this.aiProvider.generateDiscovery(
