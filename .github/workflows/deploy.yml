@@ -136,6 +136,89 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
+  create-release-pr:
+    name: Create Pull Request to Production
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    permissions:
+      contents: read
+      pull-requests: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Check if PR already exists
+        id: check-pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_EXISTS=$(gh pr list --base main --head develop --state open --json number --jq length)
+          echo "pr-exists=$PR_EXISTS" >> $GITHUB_OUTPUT
+          echo "Existing PRs from develop to main: $PR_EXISTS"
+      
+      - name: Create Pull Request to Main
+        if: steps.check-pr.outputs.pr-exists == '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --base main \
+            --head develop \
+            --title "🚀 Release: Deploy to Production from Staging" \
+            --body "## 🎯 Deploy to Production
+          
+          This PR contains changes that have been successfully deployed and tested in **staging environment**.
+          
+          ### ✅ Staging Deployment
+          
+          - **Status**: ✅ Successfully deployed
+          - **Environment**: Staging (Preview)
+          - **Tests**: All tests passed (lint, unit tests, build)
+          - **Commit**: ${{ github.sha }}
+          - **Triggered by**: @${{ github.actor }}
+          
+          ### 📝 Changes
+          
+          \`\`\`
+          ${{ github.event.head_commit.message }}
+          \`\`\`
+          
+          ### 🔍 Review Checklist
+          
+          - [x] All tests passing
+          - [x] Staging deployment successful
+          - [ ] Code review approved
+          - [ ] Ready for production
+          
+          ### 🚀 Production Deployment
+          
+          Once this PR is merged, the changes will be automatically deployed to production:
+          **https://product-discovery-agent.vercel.app**
+          
+          ---
+          
+          🤖 This PR was automatically created by the CI/CD pipeline after successful staging deployment." \
+            --label "release,automated,staging-approved"
+      
+      - name: Comment on existing PR
+        if: steps.check-pr.outputs.pr-exists != '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER=$(gh pr list --base main --head develop --state open --json number --jq '.[0].number')
+          gh pr comment $PR_NUMBER --body "✅ **New staging deployment successful!**
+          
+          - **Commit**: ${{ github.sha }}
+          - **Message**: ${{ github.event.head_commit.message }}
+          - **Deployed by**: @${{ github.actor }}
+          - **Time**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+          
+          All tests passed and changes are ready for production review."
+
   deploy-production:
     name: Deploy to Production (Vercel)
     runs-on: ubuntu-latest
