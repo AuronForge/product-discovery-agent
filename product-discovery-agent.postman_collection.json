@@ -1,0 +1,386 @@
+{
+  "info": {
+    "name": "Product Discovery Agent API",
+    "description": "A backend agent that performs macro-level product discovery using AI (GitHub Copilot).\n\nThis collection includes all available endpoints with sample requests and responses.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "product-discovery-agent-v1",
+    "version": "1.0.0"
+  },
+  "item": [
+    {
+      "name": "Product Discovery",
+      "item": [
+        {
+          "name": "Execute Discovery (English)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"problem\": \"We need a system to manage customer relationships and track sales opportunities effectively. The system should help our sales team stay organized, improve customer communication, and provide insights into our sales pipeline.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/discovery",
+              "host": ["{{base_url}}"],
+              "path": ["api", "discovery"]
+            },
+            "description": "Analyzes a problem description in English and returns a comprehensive product discovery solution with prioritized epics."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"problem\": \"We need a system to manage customer relationships effectively\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/discovery",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "discovery"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"name\": \"Customer Relationship Management System\",\n  \"solution\": \"A comprehensive CRM system that streamlines customer interactions, tracks sales opportunities, and provides actionable insights through advanced analytics.\",\n  \"epics\": [\n    {\n      \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"name\": \"User Authentication and Authorization\",\n      \"description\": \"Implement secure authentication with MFA and role-based access control to ensure system security and compliance.\",\n      \"requirements\": [\n        \"Multi-factor authentication (MFA)\",\n        \"Role-based access control (RBAC)\",\n        \"Session management with JWT\",\n        \"GDPR compliance for personal data\",\n        \"Audit logging for security events\"\n      ],\n      \"priority\": \"P0 (Must)\",\n      \"type\": \"Time de desenvolvimento\"\n    },\n    {\n      \"id\": \"660e8400-e29b-41d4-a716-446655440001\",\n      \"name\": \"Customer Data Management\",\n      \"description\": \"Enable comprehensive customer data management with CRUD operations and data validation.\",\n      \"requirements\": [\n        \"CRUD operations for customer records\",\n        \"Data validation and sanitization\",\n        \"Search and filter capabilities\",\n        \"Data import/export functionality\",\n        \"GDPR compliance: right to be forgotten\"\n      ],\n      \"priority\": \"P0 (Must)\",\n      \"type\": \"Time de desenvolvimento\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Execute Discovery (Portuguese)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"problem\": \"Precisamos de um sistema para gerenciar relacionamentos com clientes e acompanhar oportunidades de vendas de forma eficaz. O sistema deve ajudar nossa equipe de vendas a se manter organizada, melhorar a comunicação com clientes e fornecer insights sobre nosso pipeline de vendas.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/discovery",
+              "host": ["{{base_url}}"],
+              "path": ["api", "discovery"]
+            },
+            "description": "Analyzes a problem description in Portuguese and returns a comprehensive product discovery solution with prioritized epics in Portuguese."
+          },
+          "response": []
+        },
+        {
+          "name": "Execute Discovery - E-commerce Platform",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"problem\": \"We want to build an e-commerce platform that allows small businesses to easily create online stores, manage inventory, process payments securely, and track orders. The platform should be user-friendly, scalable, and mobile-responsive.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/discovery",
+              "host": ["{{base_url}}"],
+              "path": ["api", "discovery"]
+            },
+            "description": "Example: E-commerce platform product discovery"
+          },
+          "response": []
+        },
+        {
+          "name": "Execute Discovery - Healthcare App",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"problem\": \"Create a healthcare application that enables patients to schedule appointments, access medical records, communicate with doctors via telemedicine, and receive medication reminders. The app must comply with HIPAA and ensure data privacy.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/discovery",
+              "host": ["{{base_url}}"],
+              "path": ["api", "discovery"]
+            },
+            "description": "Example: Healthcare application product discovery"
+          },
+          "response": []
+        }
+      ],
+      "description": "Product discovery endpoints for analyzing problems and generating solutions with epics"
+    },
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Get Health Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/health",
+              "host": ["{{base_url}}"],
+              "path": ["api", "health"]
+            },
+            "description": "Returns the health status of the service"
+          },
+          "response": [
+            {
+              "name": "Healthy Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/health",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "health"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"healthy\",\n  \"timestamp\": \"2026-01-28T10:30:00.000Z\",\n  \"service\": \"product-discovery-agent\"\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Health check endpoints for monitoring service status"
+    },
+    {
+      "name": "Error Scenarios",
+      "item": [
+        {
+          "name": "Validation Error - Empty Problem",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"problem\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/discovery",
+              "host": ["{{base_url}}"],
+              "path": ["api", "discovery"]
+            },
+            "description": "Returns 400 error for empty problem description"
+          },
+          "response": [
+            {
+              "name": "Validation Error Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"problem\": \"\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/discovery",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "discovery"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Validation Error\",\n  \"message\": \"Invalid request data\",\n  \"details\": [\n    {\n      \"field\": \"problem\",\n      \"message\": \"Problem description must be at least 10 characters long\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Validation Error - Too Short",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"problem\": \"Short\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/discovery",
+              "host": ["{{base_url}}"],
+              "path": ["api", "discovery"]
+            },
+            "description": "Returns 400 error for problem description shorter than 10 characters"
+          },
+          "response": []
+        },
+        {
+          "name": "Validation Error - Missing Field",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Wrong field name\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/discovery",
+              "host": ["{{base_url}}"],
+              "path": ["api", "discovery"]
+            },
+            "description": "Returns 400 error for missing 'problem' field"
+          },
+          "response": []
+        },
+        {
+          "name": "List All Discoveries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/discoveries?limit=10&offset=0",
+              "host": ["{{base_url}}"],
+              "path": ["api", "discoveries"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Maximum number of discoveries to return"
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Number of discoveries to skip"
+                }
+              ]
+            },
+            "description": "Returns a paginated list of all product discoveries with summary information"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Discovery by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/discoveries/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "discoveries", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "7684dd52-8b58-4399-9be3-ebb3bcdcaf7c",
+                  "description": "Discovery ID (UUID)"
+                }
+              ]
+            },
+            "description": "Returns a specific discovery with all details including all epics and requirements"
+          },
+          "response": []
+        }
+      ],
+      "description": "Examples of error scenarios and their responses"
+    },
+    {
+      "name": "Documentation",
+      "item": [
+        {
+          "name": "Get API Root",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            },
+            "description": "Returns API information and available endpoints"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Swagger JSON",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/swagger.json",
+              "host": ["{{base_url}}"],
+              "path": ["swagger.json"]
+            },
+            "description": "Returns OpenAPI specification in JSON format"
+          },
+          "response": []
+        }
+      ],
+      "description": "Documentation and API information endpoints"
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ]
+}

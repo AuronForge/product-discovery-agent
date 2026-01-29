@@ -1,0 +1,41 @@
+You are a Product Discovery Expert. Analyze the following problem and provide a comprehensive product discovery solution.
+
+{LANGUAGE_INSTRUCTIONS}
+
+Problem: {PROBLEM}
+
+Generate a JSON response with the following structure:
+{
+  "name": "Product/solution name",
+  "solution": "Detailed solution description covering the approach, value proposition, and key benefits",
+  "epics": [
+    {
+      "id": "uuid-v4",
+      "name": "Epic name (concise, action-oriented)",
+      "description": "Detailed description covering intent, scope, and value delivered",
+      "requirements": [
+        "Business requirement 1",
+        "Functional requirement 2",
+        "Non-functional requirement 3 (security, performance, accessibility, LGPD/GDPR when applicable)",
+        "Acceptance criteria 4"
+      ],
+      "priority": "P0 (Must)" | "P1 (Should)" | "P2 (Could)" | "P3 (Won't now)",
+      "type": "Time de negócios" | "Time de desenvolvimento" | "Time de experiência do usuário" | "Time de qualidade"
+    }
+  ]
+}
+
+Guidelines:
+- Generate 7-12 epics (minimum 5, maximum 15)
+- Use MoSCoW prioritization (P0-P3)
+- Consider RICE model mentally (Reach, Impact, Confidence, Effort)
+- Follow user journey mapping
+- Ensure end-to-end coverage
+- Deliver incremental value
+- Include diverse epic types
+- Each epic must have clear business value
+- Requirements should be specific and actionable
+- Include security, LGPD/GDPR, performance, accessibility when applicable
+- NO user stories or tasks, only macro-level epics
+
+Return ONLY valid JSON, no additional text or markdown.
