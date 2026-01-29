@@ -25,7 +25,7 @@ A backend agent that performs macro-level product discovery using AI (GitHub Cop
 
 ## Usage
 
-1. Send a POST request to \`/api/discovery\` with a problem description
+1. Send a POST request to \`/api/v1/discovery\` with a problem description
 2. The agent detects the language automatically
 3. Receives a structured solution with epics in the same language
 

@@ -45,7 +45,7 @@ export const createApp = (): Express => {
   const productDiscoveryController = container.productDiscoveryController;
 
   // API routes
-  app.use('/api', createProductDiscoveryRoutes(productDiscoveryController));
+  app.use('/api/v1', createProductDiscoveryRoutes(productDiscoveryController));
 
   // Root endpoint
   app.get('/', (_req, res) => {
@@ -57,8 +57,8 @@ export const createApp = (): Express => {
       endpoints: {
         documentation: '/docs',
         swagger: '/swagger.json',
-        discovery: 'POST /api/discovery',
-        health: 'GET /api/health'
+        discovery: 'POST /api/v1/discovery',
+        health: 'GET /api/v1/health'
       }
     });
   });
@@ -70,8 +70,8 @@ export const createApp = (): Express => {
       message: `Route ${req.method} ${req.path} not found`,
       availableRoutes: {
         documentation: '/docs',
-        discovery: 'POST /api/discovery',
-        health: 'GET /api/health'
+        discovery: 'POST /api/v1/discovery',
+        health: 'GET /api/v1/health'
       }
     });
   });

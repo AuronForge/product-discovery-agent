@@ -161,7 +161,7 @@ http://localhost:3000/api
 
 #### 1. Execute Product Discovery
 
-**Endpoint**: `POST /api/discovery`
+**Endpoint**: `POST /api/v1/discovery`
 
 **Description**: Analyzes a problem and returns a structured product discovery solution
 
@@ -176,7 +176,7 @@ http://localhost:3000/api
 **Example Request** (English):
 
 ```bash
-curl -X POST http://localhost:3000/api/discovery \
+curl -X POST http://localhost:3000/api/v1/discovery \
   -H "Content-Type: application/json" \
   -d '{
     "problem": "We need a system to manage customer relationships and track sales opportunities effectively"
@@ -186,7 +186,7 @@ curl -X POST http://localhost:3000/api/discovery \
 **Example Request** (Portuguese):
 
 ```bash
-curl -X POST http://localhost:3000/api/discovery \
+curl -X POST http://localhost:3000/api/v1/discovery \
   -H "Content-Type: application/json" \
   -d '{
     "problem": "Precisamos de um sistema para gerenciar relacionamentos com clientes e acompanhar oportunidades de vendas de forma eficaz"
