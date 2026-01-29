@@ -160,7 +160,7 @@ jobs:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
     needs: build
-    if: github.event_name == 'push' && github.repository == 'AuronForge/product-discovery-agent'
+    if: github.event_name == 'push' && github.repository == 'AuronForge/product-discovery-agent' && secrets.DOCKER_USERNAME != ''
     
     steps:
       - name: Checkout code
@@ -179,7 +179,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: yourusername/product-discovery-agent
+          images: ${{ secrets.DOCKER_USERNAME }}/product-discovery-agent
           tags: |
             type=ref,event=branch
             type=ref,event=pr
