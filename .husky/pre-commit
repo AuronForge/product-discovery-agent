@@ -1,0 +1,5 @@
+# Run linters and prettier on staged files
+npx lint-staged
+
+# Run tests with coverage
+npm run test:coverage

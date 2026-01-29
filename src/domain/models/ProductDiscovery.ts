@@ -13,12 +13,16 @@ export interface Epic {
 /**
  * MoSCoW prioritization levels
  */
-export type Priority = 'P0 (Must)' | 'P1 (Should)' | 'P2 (Could)' | 'P3 (Won\'t now)';
+export type Priority =
+  | 'P0 (Must)'
+  | 'P1 (Should)'
+  | 'P2 (Could)'
+  | "P3 (Won't now)";
 
 /**
  * Epic types aligned with team responsibilities
  */
-export type EpicType = 
+export type EpicType =
   | 'Time de negócios'
   | 'Time de desenvolvimento'
   | 'Time de experiência do usuário'

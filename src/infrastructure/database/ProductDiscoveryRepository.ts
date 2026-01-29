@@ -13,7 +13,11 @@ export class ProductDiscoveryRepository implements IProductDiscoveryRepository {
   /**
    * Save a product discovery solution to the database
    */
-  async save(solution: ProductDiscoverySolution, problem: string, language: string): Promise<string> {
+  async save(
+    solution: ProductDiscoverySolution,
+    problem: string,
+    language: string
+  ): Promise<string> {
     const discoveryId = uuidv4();
 
     // Start transaction for data consistency
@@ -77,34 +81,47 @@ export class ProductDiscoveryRepository implements IProductDiscoveryRepository {
     createdAt: Date;
   } | null> {
     // Get discovery
-    const discovery = this.db.prepare(`
+    const discovery = this.db
+      .prepare(
+        `
       SELECT id, name, solution, problem, language, created_at
       FROM discoveries
       WHERE id = ?
-    `).get(id) as any;
+    `
+      )
+      .get(id) as any;
 
     if (!discovery) {
       return null;
     }
 
     // Get epics
-    const epics = this.db.prepare(`
+    const epics = this.db
+      .prepare(
+        `
       SELECT id, name, description, priority, type, epic_order
       FROM epics
       WHERE discovery_id = ?
       ORDER BY epic_order
-    `).all(id) as any[];
+    `
+      )
+      .all(id) as any[];
 
     // Get requirements for all epics
     const epicIds = epics.map(e => e.id);
-    const requirements = epicIds.length > 0
-      ? this.db.prepare(`
+    const requirements =
+      epicIds.length > 0
+        ? (this.db
+            .prepare(
+              `
           SELECT epic_id, description, requirement_order
           FROM requirements
           WHERE epic_id IN (${epicIds.map(() => '?').join(',')})
           ORDER BY requirement_order
-        `).all(...epicIds) as any[]
-      : [];
+        `
+            )
+            .all(...epicIds) as any[])
+        : [];
 
     // Build solution object
     const solution: ProductDiscoverySolution = {
@@ -134,19 +151,28 @@ export class ProductDiscoveryRepository implements IProductDiscoveryRepository {
   /**
    * Get all discoveries with pagination
    */
-  async findAll(limit: number = 10, offset: number = 0): Promise<Array<{
-    id: string;
-    solution: ProductDiscoverySolution;
-    problem: string;
-    language: string;
-    createdAt: Date;
-  }>> {
-    const discoveries = this.db.prepare(`
+  async findAll(
+    limit: number = 10,
+    offset: number = 0
+  ): Promise<
+    Array<{
+      id: string;
+      solution: ProductDiscoverySolution;
+      problem: string;
+      language: string;
+      createdAt: Date;
+    }>
+  > {
+    const discoveries = this.db
+      .prepare(
+        `
       SELECT id
       FROM discoveries
       ORDER BY created_at DESC
       LIMIT ? OFFSET ?
-    `).all(limit, offset) as Array<{ id: string }>;
+    `
+      )
+      .all(limit, offset) as Array<{ id: string }>;
 
     // Fetch full data for each discovery
     const results = [];
@@ -164,9 +190,13 @@ export class ProductDiscoveryRepository implements IProductDiscoveryRepository {
    * Count total discoveries in the database
    */
   async count(): Promise<number> {
-    const result = this.db.prepare(`
+    const result = this.db
+      .prepare(
+        `
       SELECT COUNT(*) as count FROM discoveries
-    `).get() as { count: number };
+    `
+      )
+      .get() as { count: number };
 
     return result.count;
   }
@@ -175,9 +205,13 @@ export class ProductDiscoveryRepository implements IProductDiscoveryRepository {
    * Delete a discovery by ID
    */
   async deleteById(id: string): Promise<boolean> {
-    const result = this.db.prepare(`
+    const result = this.db
+      .prepare(
+        `
       DELETE FROM discoveries WHERE id = ?
-    `).run(id);
+    `
+      )
+      .run(id);
 
     return result.changes > 0;
   }

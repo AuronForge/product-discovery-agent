@@ -28,8 +28,9 @@ describe('ProductDiscoveryValidator', () => {
         problem: ''
       };
 
-      expect(() => ProductDiscoveryRequestSchema.parse(invalidRequest))
-        .toThrow(ZodError);
+      expect(() => ProductDiscoveryRequestSchema.parse(invalidRequest)).toThrow(
+        ZodError
+      );
     });
 
     it('should reject problem shorter than 10 characters', () => {
@@ -37,8 +38,9 @@ describe('ProductDiscoveryValidator', () => {
         problem: 'Short'
       };
 
-      expect(() => ProductDiscoveryRequestSchema.parse(invalidRequest))
-        .toThrow(ZodError);
+      expect(() => ProductDiscoveryRequestSchema.parse(invalidRequest)).toThrow(
+        ZodError
+      );
     });
 
     it('should reject problem longer than 5000 characters', () => {
@@ -46,8 +48,9 @@ describe('ProductDiscoveryValidator', () => {
         problem: 'a'.repeat(5001)
       };
 
-      expect(() => ProductDiscoveryRequestSchema.parse(invalidRequest))
-        .toThrow(ZodError);
+      expect(() => ProductDiscoveryRequestSchema.parse(invalidRequest)).toThrow(
+        ZodError
+      );
     });
 
     it('should provide detailed error messages', () => {

@@ -1,10 +1,14 @@
-import { ValidationError, AIProviderError, BusinessError } from '../CustomErrors';
+import {
+  ValidationError,
+  AIProviderError,
+  BusinessError
+} from '../CustomErrors';
 
 describe('CustomErrors', () => {
   describe('ValidationError', () => {
     it('should create ValidationError with message', () => {
       const error = new ValidationError('Invalid input');
-      
+
       expect(error).toBeInstanceOf(Error);
       expect(error).toBeInstanceOf(ValidationError);
       expect(error.message).toBe('Invalid input');
@@ -24,7 +28,7 @@ describe('CustomErrors', () => {
   describe('AIProviderError', () => {
     it('should create AIProviderError with message', () => {
       const error = new AIProviderError('AI service failed');
-      
+
       expect(error).toBeInstanceOf(Error);
       expect(error).toBeInstanceOf(AIProviderError);
       expect(error.message).toBe('AI service failed');
@@ -44,7 +48,7 @@ describe('CustomErrors', () => {
   describe('BusinessError', () => {
     it('should create BusinessError with message', () => {
       const error = new BusinessError('Business rule violated');
-      
+
       expect(error).toBeInstanceOf(Error);
       expect(error).toBeInstanceOf(BusinessError);
       expect(error.message).toBe('Business rule violated');
@@ -62,7 +66,7 @@ describe('CustomErrors', () => {
 
     it('should preserve stack trace', () => {
       const error = new BusinessError('Stack trace test');
-      
+
       expect(error.stack).toBeDefined();
       expect(error.stack).toContain('BusinessError');
       expect(error.stack).toContain('Stack trace test');

@@ -45,7 +45,9 @@ export class DIContainer {
       // Create infrastructure dependencies
       const aiProvider = new GitHubCopilotProvider();
       const languageDetector = new LanguageDetector();
-      const repository = new ProductDiscoveryRepository(this.databaseSchema.getDatabase());
+      const repository = new ProductDiscoveryRepository(
+        this.databaseSchema.getDatabase()
+      );
 
       // Create application service
       const productDiscoveryService = new ProductDiscoveryService(

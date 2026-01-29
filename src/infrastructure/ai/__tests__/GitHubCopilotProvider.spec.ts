@@ -7,7 +7,7 @@ global.fetch = jest.fn();
 describe('GitHubCopilotProvider', () => {
   let provider: GitHubCopilotProvider;
   const mockInput: ProductDiscoveryRequest = {
-    problem: 'Need to solve customer engagement',
+    problem: 'Need to solve customer engagement'
   };
 
   beforeEach(() => {
@@ -53,14 +53,14 @@ describe('GitHubCopilotProvider', () => {
                       description: 'Description 1',
                       requirements: ['Requirement 1'],
                       priority: 'P0 (Must)',
-                      type: 'Time de desenvolvimento',
-                    },
-                  ],
-                }),
-              },
-            },
-          ],
-        }),
+                      type: 'Time de desenvolvimento'
+                    }
+                  ]
+                })
+              }
+            }
+          ]
+        })
       });
 
       const result = await provider.generateDiscovery(mockInput, 'en');
@@ -71,9 +71,9 @@ describe('GitHubCopilotProvider', () => {
           method: 'POST',
           headers: expect.objectContaining({
             'Content-Type': 'application/json',
-            Authorization: 'Bearer test-token-123',
+            Authorization: 'Bearer test-token-123'
           }),
-          body: expect.stringContaining('gpt-4o-mini'),
+          body: expect.stringContaining('gpt-4o-mini')
         })
       );
 
@@ -94,12 +94,12 @@ describe('GitHubCopilotProvider', () => {
                 content: JSON.stringify({
                   name: 'Test',
                   solution: 'Default model response',
-                  epics: [],
-                }),
-              },
-            },
-          ],
-        }),
+                  epics: []
+                })
+              }
+            }
+          ]
+        })
       });
 
       await provider.generateDiscovery(mockInput, 'en');
@@ -107,7 +107,7 @@ describe('GitHubCopilotProvider', () => {
       expect(global.fetch).toHaveBeenCalledWith(
         expect.any(String),
         expect.objectContaining({
-          body: expect.stringContaining('gpt-4o'),
+          body: expect.stringContaining('gpt-4o')
         })
       );
     });
@@ -121,15 +121,15 @@ describe('GitHubCopilotProvider', () => {
           choices: [
             {
               message: {
-                content: JSON.stringify({ 
+                content: JSON.stringify({
                   name: 'Test Product',
-                  solution: 'Test', 
-                  epics: [] 
-                }),
-              },
-            },
-          ],
-        }),
+                  solution: 'Test',
+                  epics: []
+                })
+              }
+            }
+          ]
+        })
       });
 
       await provider.generateDiscovery(mockInput, 'en');
@@ -137,11 +137,11 @@ describe('GitHubCopilotProvider', () => {
       const callBody = JSON.parse(
         (global.fetch as jest.Mock).mock.calls[0][1].body
       );
-      const userMessage = callBody.messages.find(
-        (m: any) => m.role === 'user'
-      );
+      const userMessage = callBody.messages.find((m: any) => m.role === 'user');
 
-      expect(userMessage.content).toContain('Need to solve customer engagement');
+      expect(userMessage.content).toContain(
+        'Need to solve customer engagement'
+      );
       expect(userMessage.content).toContain('ENGLISH');
     });
 
@@ -165,7 +165,7 @@ describe('GitHubCopilotProvider', () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: false,
         status: 401,
-        statusText: 'Unauthorized',
+        statusText: 'Unauthorized'
       });
 
       const result = await provider.generateDiscovery(mockInput, 'en');
@@ -184,11 +184,11 @@ describe('GitHubCopilotProvider', () => {
           choices: [
             {
               message: {
-                content: 'Invalid JSON content',
-              },
-            },
-          ],
-        }),
+                content: 'Invalid JSON content'
+              }
+            }
+          ]
+        })
       });
 
       await expect(provider.generateDiscovery(mockInput, 'en')).rejects.toThrow(
@@ -201,7 +201,7 @@ describe('GitHubCopilotProvider', () => {
 
       (global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
-        json: async () => ({}),
+        json: async () => ({})
       });
 
       const result = await provider.generateDiscovery(mockInput, 'en');
@@ -224,9 +224,9 @@ describe('GitHubCopilotProvider', () => {
             description: expect.any(String),
             requirements: expect.any(Array),
             priority: expect.stringMatching(/^P[0-3] \(/),
-            type: expect.any(String),
-          }),
-        ]),
+            type: expect.any(String)
+          })
+        ])
       });
     });
 

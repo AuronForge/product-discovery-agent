@@ -2,7 +2,10 @@ import { ProductDiscoveryService } from './ProductDiscoveryService';
 import { IAIProvider } from '../../domain/interfaces/IAIProvider';
 import { ILanguageDetector } from '../../domain/interfaces/ILanguageDetector';
 import { IProductDiscoveryRepository } from '../../domain/repositories/IProductDiscoveryRepository';
-import { ProductDiscoverySolution, ProductDiscoveryRequest } from '../../domain/models/ProductDiscovery';
+import {
+  ProductDiscoverySolution,
+  ProductDiscoveryRequest
+} from '../../domain/models/ProductDiscovery';
 import { v4 as uuidv4 } from 'uuid';
 
 describe('ProductDiscoveryService', () => {
@@ -28,7 +31,11 @@ describe('ProductDiscoveryService', () => {
       deleteById: jest.fn()
     };
 
-    service = new ProductDiscoveryService(mockAIProvider, mockLanguageDetector, mockRepository);
+    service = new ProductDiscoveryService(
+      mockAIProvider,
+      mockLanguageDetector,
+      mockRepository
+    );
   });
 
   describe('executeDiscovery', () => {
@@ -52,7 +59,11 @@ describe('ProductDiscoveryService', () => {
           id: uuidv4(),
           name: 'Customer Database',
           description: 'Create customer database',
-          requirements: ['Database schema', 'CRUD operations', 'Data validation'],
+          requirements: [
+            'Database schema',
+            'CRUD operations',
+            'Data validation'
+          ],
           priority: 'P0 (Must)',
           type: 'Time de desenvolvimento'
         },
@@ -68,7 +79,11 @@ describe('ProductDiscoveryService', () => {
           id: uuidv4(),
           name: 'Reporting',
           description: 'Generate reports',
-          requirements: ['Report templates', 'Export functionality', 'Scheduling'],
+          requirements: [
+            'Report templates',
+            'Export functionality',
+            'Scheduling'
+          ],
           priority: 'P1 (Should)',
           type: 'Time de negócios'
         },
@@ -84,75 +99,92 @@ describe('ProductDiscoveryService', () => {
     };
 
     it('should execute discovery successfully', async () => {
-      mockLanguageDetector.detect.mockReturnValue('en');
+      mockLanguageDetector.detect.mockResolvedValue('en');
       mockAIProvider.generateDiscovery.mockResolvedValue(mockSolution);
 
       const result = await service.executeDiscovery(validRequest);
 
-      expect(mockLanguageDetector.detect).toHaveBeenCalledWith(validRequest.problem);
-      expect(mockAIProvider.generateDiscovery).toHaveBeenCalledWith(validRequest, 'en');
+      expect(mockLanguageDetector.detect).toHaveBeenCalledWith(
+        validRequest.problem
+      );
+      expect(mockAIProvider.generateDiscovery).toHaveBeenCalledWith(
+        validRequest,
+        'en'
+      );
       expect(result).toEqual(mockSolution);
     });
 
     it('should detect Portuguese language', async () => {
       const portugueseRequest = {
-        problem: 'Precisamos de um sistema para gerenciar relacionamento com clientes'
+        problem:
+          'Precisamos de um sistema para gerenciar relacionamento com clientes'
       };
-      mockLanguageDetector.detect.mockReturnValue('pt');
+      mockLanguageDetector.detect.mockResolvedValue('pt');
       mockAIProvider.generateDiscovery.mockResolvedValue(mockSolution);
 
       await service.executeDiscovery(portugueseRequest);
 
-      expect(mockLanguageDetector.detect).toHaveBeenCalledWith(portugueseRequest.problem);
-      expect(mockAIProvider.generateDiscovery).toHaveBeenCalledWith(portugueseRequest, 'pt');
+      expect(mockLanguageDetector.detect).toHaveBeenCalledWith(
+        portugueseRequest.problem
+      );
+      expect(mockAIProvider.generateDiscovery).toHaveBeenCalledWith(
+        portugueseRequest,
+        'pt'
+      );
     });
 
     it('should throw error for empty problem', async () => {
       const invalidRequest = { problem: '' };
 
-      await expect(service.executeDiscovery(invalidRequest))
-        .rejects.toThrow('Problem description is required');
+      await expect(service.executeDiscovery(invalidRequest)).rejects.toThrow(
+        'Problem description is required'
+      );
     });
 
     it('should throw error for short problem description', async () => {
       const invalidRequest = { problem: 'Short' };
 
-      await expect(service.executeDiscovery(invalidRequest))
-        .rejects.toThrow('Problem description is too short');
+      await expect(service.executeDiscovery(invalidRequest)).rejects.toThrow(
+        'Problem description is too short'
+      );
     });
 
     it('should throw error for long problem description', async () => {
       const invalidRequest = { problem: 'a'.repeat(5001) };
 
-      await expect(service.executeDiscovery(invalidRequest))
-        .rejects.toThrow('Problem description is too long');
+      await expect(service.executeDiscovery(invalidRequest)).rejects.toThrow(
+        'Problem description is too long'
+      );
     });
 
     it('should throw error when solution name is missing', async () => {
       const invalidSolution = { ...mockSolution, name: '' };
-      mockLanguageDetector.detect.mockReturnValue('en');
+      mockLanguageDetector.detect.mockResolvedValue('en');
       mockAIProvider.generateDiscovery.mockResolvedValue(invalidSolution);
 
-      await expect(service.executeDiscovery(validRequest))
-        .rejects.toThrow('Solution name is required');
+      await expect(service.executeDiscovery(validRequest)).rejects.toThrow(
+        'Solution name is required'
+      );
     });
 
     it('should throw error when solution description is missing', async () => {
       const invalidSolution = { ...mockSolution, solution: '' };
-      mockLanguageDetector.detect.mockReturnValue('en');
+      mockLanguageDetector.detect.mockResolvedValue('en');
       mockAIProvider.generateDiscovery.mockResolvedValue(invalidSolution);
 
-      await expect(service.executeDiscovery(validRequest))
-        .rejects.toThrow('Solution description is required');
+      await expect(service.executeDiscovery(validRequest)).rejects.toThrow(
+        'Solution description is required'
+      );
     });
 
     it('should throw error when epics array is not present', async () => {
       const invalidSolution = { ...mockSolution, epics: null as any };
-      mockLanguageDetector.detect.mockReturnValue('en');
+      mockLanguageDetector.detect.mockResolvedValue('en');
       mockAIProvider.generateDiscovery.mockResolvedValue(invalidSolution);
 
-      await expect(service.executeDiscovery(validRequest))
-        .rejects.toThrow('Epics must be an array');
+      await expect(service.executeDiscovery(validRequest)).rejects.toThrow(
+        'Epics must be an array'
+      );
     });
 
     it('should throw error when less than 5 epics', async () => {
@@ -160,11 +192,12 @@ describe('ProductDiscoveryService', () => {
         ...mockSolution,
         epics: mockSolution.epics.slice(0, 3)
       };
-      mockLanguageDetector.detect.mockReturnValue('en');
+      mockLanguageDetector.detect.mockResolvedValue('en');
       mockAIProvider.generateDiscovery.mockResolvedValue(invalidSolution);
 
-      await expect(service.executeDiscovery(validRequest))
-        .rejects.toThrow('Minimum 5 epics required');
+      await expect(service.executeDiscovery(validRequest)).rejects.toThrow(
+        'Minimum 5 epics required'
+      );
     });
 
     it('should throw error when more than 15 epics', async () => {
@@ -173,11 +206,12 @@ describe('ProductDiscoveryService', () => {
         ...mockSolution,
         epics: manyEpics
       };
-      mockLanguageDetector.detect.mockReturnValue('en');
+      mockLanguageDetector.detect.mockResolvedValue('en');
       mockAIProvider.generateDiscovery.mockResolvedValue(invalidSolution);
 
-      await expect(service.executeDiscovery(validRequest))
-        .rejects.toThrow('Maximum 15 epics allowed');
+      await expect(service.executeDiscovery(validRequest)).rejects.toThrow(
+        'Maximum 15 epics allowed'
+      );
     });
 
     it('should throw error for epic with invalid priority', async () => {
@@ -191,11 +225,12 @@ describe('ProductDiscoveryService', () => {
           }
         ]
       };
-      mockLanguageDetector.detect.mockReturnValue('en');
+      mockLanguageDetector.detect.mockResolvedValue('en');
       mockAIProvider.generateDiscovery.mockResolvedValue(invalidSolution);
 
-      await expect(service.executeDiscovery(validRequest))
-        .rejects.toThrow('has invalid priority');
+      await expect(service.executeDiscovery(validRequest)).rejects.toThrow(
+        'has invalid priority'
+      );
     });
 
     it('should throw error for epic with invalid type', async () => {
@@ -209,11 +244,12 @@ describe('ProductDiscoveryService', () => {
           }
         ]
       };
-      mockLanguageDetector.detect.mockReturnValue('en');
+      mockLanguageDetector.detect.mockResolvedValue('en');
       mockAIProvider.generateDiscovery.mockResolvedValue(invalidSolution);
 
-      await expect(service.executeDiscovery(validRequest))
-        .rejects.toThrow('has invalid type');
+      await expect(service.executeDiscovery(validRequest)).rejects.toThrow(
+        'has invalid type'
+      );
     });
 
     it('should throw error for epic without requirements', async () => {
@@ -227,11 +263,12 @@ describe('ProductDiscoveryService', () => {
           }
         ]
       };
-      mockLanguageDetector.detect.mockReturnValue('en');
+      mockLanguageDetector.detect.mockResolvedValue('en');
       mockAIProvider.generateDiscovery.mockResolvedValue(invalidSolution);
 
-      await expect(service.executeDiscovery(validRequest))
-        .rejects.toThrow('must have at least one requirement');
+      await expect(service.executeDiscovery(validRequest)).rejects.toThrow(
+        'must have at least one requirement'
+      );
     });
 
     it('should throw error for epic with missing fields', async () => {
@@ -249,19 +286,23 @@ describe('ProductDiscoveryService', () => {
           }
         ]
       };
-      mockLanguageDetector.detect.mockReturnValue('en');
+      mockLanguageDetector.detect.mockResolvedValue('en');
       mockAIProvider.generateDiscovery.mockResolvedValue(invalidSolution);
 
-      await expect(service.executeDiscovery(validRequest))
-        .rejects.toThrow('is missing required fields');
+      await expect(service.executeDiscovery(validRequest)).rejects.toThrow(
+        'is missing required fields'
+      );
     });
 
     it('should handle AI provider errors', async () => {
-      mockLanguageDetector.detect.mockReturnValue('en');
-      mockAIProvider.generateDiscovery.mockRejectedValue(new Error('AI provider error'));
+      mockLanguageDetector.detect.mockResolvedValue('en');
+      mockAIProvider.generateDiscovery.mockRejectedValue(
+        new Error('AI provider error')
+      );
 
-      await expect(service.executeDiscovery(validRequest))
-        .rejects.toThrow('AI provider error');
+      await expect(service.executeDiscovery(validRequest)).rejects.toThrow(
+        'AI provider error'
+      );
     });
   });
 
@@ -379,8 +420,9 @@ describe('ProductDiscoveryService', () => {
     it('should handle repository errors', async () => {
       mockRepository.findById.mockRejectedValue(new Error('Database error'));
 
-      await expect(service.getDiscoveryById('test-id'))
-        .rejects.toThrow('Database error');
+      await expect(service.getDiscoveryById('test-id')).rejects.toThrow(
+        'Database error'
+      );
     });
   });
 });

@@ -18,8 +18,10 @@ const startServer = () => {
     console.log('════════════════════════════════════════════════════════');
     console.log(`📡 Server running on: http://localhost:${PORT}`);
     console.log(`📚 API Documentation: http://localhost:${PORT}/docs`);
-    console.log(`🏥 Health Check: http://localhost:${PORT}/api/health`);
-    console.log(`🔍 Discovery Endpoint: POST http://localhost:${PORT}/api/discovery`);
+    console.log(`🏥 Health Check: http://localhost:${PORT}/api/v1/health`);
+    console.log(
+      `🔍 Discovery Endpoint: POST http://localhost:${PORT}/api/v1/discovery`
+    );
     console.log('════════════════════════════════════════════════════════');
     console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`Timestamp: ${new Date().toISOString()}`);
@@ -28,7 +30,7 @@ const startServer = () => {
 };
 
 // Handle uncaught errors
-process.on('uncaughtException', (error) => {
+process.on('uncaughtException', error => {
   console.error('Uncaught Exception:', error);
   process.exit(1);
 });

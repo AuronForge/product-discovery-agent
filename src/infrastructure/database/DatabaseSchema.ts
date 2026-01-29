@@ -9,9 +9,15 @@ export class DatabaseSchema {
   private db: Database.Database;
 
   constructor(dbPath?: string) {
-    // Default to data/discoveries.db
-    const finalPath = dbPath || path.join(process.cwd(), 'data', 'discoveries.db');
-    
+    // Default to /tmp in serverless environment, data/discoveries.db locally
+    const isServerless =
+      process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME;
+    const defaultPath = isServerless
+      ? '/tmp/discoveries.db'
+      : path.join(process.cwd(), 'data', 'discoveries.db');
+
+    const finalPath = dbPath || defaultPath;
+
     // Ensure directory exists
     const dir = path.dirname(finalPath);
     const fs = require('fs');

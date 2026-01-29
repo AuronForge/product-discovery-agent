@@ -127,7 +127,7 @@ describe('DatabaseSchema', () => {
         name: 'Test Product',
         problem: 'Test Problem',
         solution: 'Test Solution',
-        language: 'en',
+        language: 'en'
       });
     });
 
@@ -141,7 +141,15 @@ describe('DatabaseSchema', () => {
       `);
 
       expect(() => {
-        insertEpic.run('epic-1', 'non-existent-id', 'Title', 'Desc', 'P0', 'Dev', 1);
+        insertEpic.run(
+          'epic-1',
+          'non-existent-id',
+          'Title',
+          'Desc',
+          'P0',
+          'Dev',
+          1
+        );
       }).toThrow();
     });
 
@@ -165,10 +173,12 @@ describe('DatabaseSchema', () => {
 
       // Insert discovery
       const discoveryId = 'test-uuid';
-      db.prepare(`
+      db.prepare(
+        `
         INSERT INTO discoveries (id, name, problem, solution, language, created_at)
         VALUES (?, ?, ?, ?, ?, ?)
-      `).run(
+      `
+      ).run(
         discoveryId,
         'Test',
         'Problem',
@@ -179,10 +189,12 @@ describe('DatabaseSchema', () => {
 
       // Insert epic
       const epicId = 'epic-1';
-      db.prepare(`
+      db.prepare(
+        `
         INSERT INTO epics (id, discovery_id, name, description, priority, type, epic_order)
         VALUES (?, ?, ?, ?, ?, ?, ?)
-      `).run(epicId, discoveryId, 'Epic Title', 'Epic Desc', 'P0', 'Dev', 1);
+      `
+      ).run(epicId, discoveryId, 'Epic Title', 'Epic Desc', 'P0', 'Dev', 1);
 
       // Delete discovery
       db.prepare('DELETE FROM discoveries WHERE id = ?').run(discoveryId);
@@ -198,10 +210,12 @@ describe('DatabaseSchema', () => {
 
       // Insert discovery
       const discoveryId = 'test-uuid';
-      db.prepare(`
+      db.prepare(
+        `
         INSERT INTO discoveries (id, name, problem, solution, language, created_at)
         VALUES (?, ?, ?, ?, ?, ?)
-      `).run(
+      `
+      ).run(
         discoveryId,
         'Test',
         'Problem',
@@ -212,16 +226,20 @@ describe('DatabaseSchema', () => {
 
       // Insert epic
       const epicId = 'epic-1';
-      db.prepare(`
+      db.prepare(
+        `
         INSERT INTO epics (id, discovery_id, name, description, priority, type, epic_order)
         VALUES (?, ?, ?, ?, ?, ?, ?)
-      `).run(epicId, discoveryId, 'Epic Title', 'Epic Desc', 'P0', 'Dev', 1);
+      `
+      ).run(epicId, discoveryId, 'Epic Title', 'Epic Desc', 'P0', 'Dev', 1);
 
       // Insert requirement
-      db.prepare(`
+      db.prepare(
+        `
         INSERT INTO requirements (epic_id, description, requirement_order)
         VALUES (?, ?, ?)
-      `).run(epicId, 'Requirement Desc', 1);
+      `
+      ).run(epicId, 'Requirement Desc', 1);
 
       const reqBefore = db
         .prepare('SELECT * FROM requirements WHERE epic_id = ?')
@@ -255,16 +273,16 @@ describe('DatabaseSchema', () => {
 
     it('should return database instance via getDatabase()', () => {
       const dbInstance = schema.getDatabase();
-      
+
       expect(dbInstance).toBeDefined();
       expect(dbInstance).toBe(db);
     });
 
     it('should close database connection', () => {
       const closeSpy = jest.spyOn(db, 'close');
-      
+
       schema.close();
-      
+
       expect(closeSpy).toHaveBeenCalled();
     });
 
@@ -272,22 +290,22 @@ describe('DatabaseSchema', () => {
       const fs = require('fs');
       const path = require('path');
       const os = require('os');
-      
+
       // Create a test path that definitely doesn't exist
       const testDir = path.join(os.tmpdir(), 'test-discovery-' + Date.now());
       const testDbPath = path.join(testDir, 'test.db');
-      
+
       // Ensure it doesn't exist
       if (fs.existsSync(testDir)) {
         fs.rmSync(testDir, { recursive: true });
       }
-      
+
       // Create schema with path that requires directory creation
       const testSchema = new DatabaseSchema(testDbPath);
-      
+
       // Directory should now exist
       expect(fs.existsSync(testDir)).toBe(true);
-      
+
       // Cleanup
       testSchema.close();
       fs.rmSync(testDir, { recursive: true });
@@ -296,21 +314,23 @@ describe('DatabaseSchema', () => {
     it('should use default path when no path provided', () => {
       const fs = require('fs');
       const path = require('path');
-      
+
       // Mock process.cwd to return a test directory
-      const originalCwd = process.cwd();
-      const testCwd = path.join(require('os').tmpdir(), 'test-cwd-' + Date.now());
+      const testCwd = path.join(
+        require('os').tmpdir(),
+        'test-cwd-' + Date.now()
+      );
       fs.mkdirSync(testCwd, { recursive: true });
-      
+
       jest.spyOn(process, 'cwd').mockReturnValue(testCwd);
-      
+
       try {
         const defaultSchema = new DatabaseSchema();
         const dbPath = (defaultSchema as any).db.name;
-        
+
         expect(dbPath).toContain('data');
         expect(dbPath).toContain('discoveries.db');
-        
+
         defaultSchema.close();
       } finally {
         jest.restoreAllMocks();

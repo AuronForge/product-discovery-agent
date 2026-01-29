@@ -1,0 +1,287 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: read
+  pull-requests: write
+  statuses: write
+
+jobs:
+  lint:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run ESLint
+        run: npm run lint
+      
+      - name: Check code formatting
+        run: npm run format:check
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run tests with coverage
+        run: npm run test:coverage
+      
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build application
+        run: npm run build
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 7
+
+  deploy-staging:
+    name: Deploy to Staging (Vercel Preview)
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    environment:
+      name: staging
+      url: ${{ steps.vercel-deploy.outputs.preview-url }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      
+      - name: Build Project Artifacts
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      
+      - name: Deploy to Vercel Preview
+        id: vercel-deploy
+        run: |
+          DEPLOYMENT_URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          echo "preview-url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+          echo "Deployed to: $DEPLOYMENT_URL"
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+  create-release-pr:
+    name: Create Pull Request to Production
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Check if PR already exists
+        id: check-pr
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT  }}
+        run: |
+          PR_EXISTS=$(gh pr list --base main --head develop --state open --json number --jq length)
+          echo "pr-exists=$PR_EXISTS" >> $GITHUB_OUTPUT
+          echo "Existing PRs from develop to main: $PR_EXISTS"
+      
+      - name: Create labels if they don't exist
+        if: steps.check-pr.outputs.pr-exists == '0'
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT  }}
+        continue-on-error: true
+        run: |
+          gh label create "release" --description "Release to production" --color "0E8A16" || true
+          gh label create "automated" --description "Automated by CI/CD" --color "FBCA04" || true
+          gh label create "staging-approved" --description "Approved in staging" --color "0075CA" || true
+      
+      - name: Create Pull Request to Main
+        if: steps.check-pr.outputs.pr-exists == '0'
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT  }}
+        run: |
+          gh pr create \
+            --base main \
+            --head develop \
+            --title "🚀 Release: Deploy to Production from Staging" \
+            --body "## 🎯 Deploy to Production
+          
+          This PR contains changes that have been successfully deployed and tested in **staging environment**.
+          
+          ### ✅ Staging Deployment
+          
+          - **Status**: ✅ Successfully deployed
+          - **Environment**: Staging (Preview)
+          - **Tests**: All tests passed (lint, unit tests, build)
+          - **Commit**: ${{ github.sha }}
+          - **Triggered by**: @${{ github.actor }}
+          
+          ### 📝 Changes
+          
+          \`\`\`
+          ${{ github.event.head_commit.message }}
+          \`\`\`
+          
+          ### 🔍 Review Checklist
+          
+          - [x] All tests passing
+          - [x] Staging deployment successful
+          - [ ] Code review approved
+          - [ ] Ready for production
+          
+          ### 🚀 Production Deployment
+          
+          Once this PR is merged, the changes will be automatically deployed to production:
+          **https://product-discovery-agent.vercel.app**
+          
+          ---
+          
+          🤖 This PR was automatically created by the CI/CD pipeline after successful staging deployment." \
+            --label "release,automated,staging-approved"
+      
+      - name: Comment on existing PR
+        if: steps.check-pr.outputs.pr-exists != '0'
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT  }}
+        run: |
+          PR_NUMBER=$(gh pr list --base main --head develop --state open --json number --jq '.[0].number')
+          gh pr comment $PR_NUMBER --body "✅ **New staging deployment successful!**
+          
+          - **Commit**: ${{ github.sha }}
+          - **Message**: ${{ github.event.head_commit.message }}
+          - **Deployed by**: @${{ github.actor }}
+          - **Time**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+          
+          All tests passed and changes are ready for production review."
+
+  deploy-production:
+    name: Deploy to Production (Vercel)
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: production
+      url: https://product-discovery-agent.vercel.app
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      
+      - name: Deploy to Vercel Production
+        id: vercel-deploy
+        run: |
+          DEPLOYMENT_URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          echo "production-url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+          echo "Deployed to: $DEPLOYMENT_URL"
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      
+      - name: Create Release Notes
+        if: success()
+        run: |
+          echo "✅ Deployment successful!"
+          echo "🚀 Production URL: https://product-discovery-agent.vercel.app"
+          echo "📦 Version: $(node -p "require('./package.json').version")"

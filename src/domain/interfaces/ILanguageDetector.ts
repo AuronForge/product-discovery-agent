@@ -9,5 +9,5 @@ export interface ILanguageDetector {
    * @param text - The text to analyze
    * @returns The detected language code
    */
-  detect(text: string): LanguageCode;
+  detect(text: string): Promise<LanguageCode>;
 }

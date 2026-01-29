@@ -75,6 +75,10 @@ This project follows **Clean Architecture** principles with clear separation of 
 - **Documentation**: Swagger/OpenAPI 3.0
 - **AI Provider**: GitHub Models API (gpt-4o) - Free!
 - **Language Detection**: franc 6.2
+- **Code Quality**: ESLint, Prettier
+- **Git Hooks**: Husky, lint-staged
+- **Commit Standards**: Commitlint, Commitizen
+- **Versioning**: standard-version
 
 ## 🚀 Getting Started
 
@@ -157,7 +161,7 @@ http://localhost:3000/api
 
 #### 1. Execute Product Discovery
 
-**Endpoint**: `POST /api/discovery`
+**Endpoint**: `POST /api/v1/discovery`
 
 **Description**: Analyzes a problem and returns a structured product discovery solution
 
@@ -172,7 +176,7 @@ http://localhost:3000/api
 **Example Request** (English):
 
 ```bash
-curl -X POST http://localhost:3000/api/discovery \
+curl -X POST http://localhost:3000/api/v1/discovery \
   -H "Content-Type: application/json" \
   -d '{
     "problem": "We need a system to manage customer relationships and track sales opportunities effectively"
@@ -182,7 +186,7 @@ curl -X POST http://localhost:3000/api/discovery \
 **Example Request** (Portuguese):
 
 ```bash
-curl -X POST http://localhost:3000/api/discovery \
+curl -X POST http://localhost:3000/api/v1/discovery \
   -H "Content-Type: application/json" \
   -d '{
     "problem": "Precisamos de um sistema para gerenciar relacionamentos com clientes e acompanhar oportunidades de vendas de forma eficaz"
@@ -243,6 +247,7 @@ curl -X POST http://localhost:3000/api/discovery \
 **Description**: Returns a paginated list of all product discoveries
 
 **Query Parameters**:
+
 - `limit` (optional): Maximum number of records (default: 10, max: 100)
 - `offset` (optional): Number of records to skip (default: 0)
 
@@ -446,6 +451,88 @@ Minimum coverage thresholds (configured in `jest.config.js`):
 - **Integration Tests**: Test component interactions
 - **Coverage Reports**: HTML reports in `coverage/` directory
 
+## 💻 Development
+
+### Code Quality Tools
+
+#### Linting
+
+```bash
+# Run ESLint
+npm run lint
+
+# Fix linting issues automatically
+npm run lint:fix
+```
+
+#### Formatting
+
+```bash
+# Format code with Prettier
+npm run format
+
+# Check formatting without modifying files
+npm run format:check
+```
+
+#### Git Hooks (Husky)
+
+The project uses Husky to ensure code quality before commits:
+
+- **Pre-commit**: Runs lint-staged (ESLint + Prettier on staged files) and tests with coverage
+- **Commit-msg**: Validates commit message format using Commitlint
+
+#### Conventional Commits
+
+All commits must follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
+
+```bash
+# Use commitizen for guided commits
+npm run commit
+```
+
+**Commit Types**:
+
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation changes
+- `style`: Code style changes (formatting, etc.)
+- `refactor`: Code refactoring
+- `perf`: Performance improvements
+- `test`: Adding or updating tests
+- `build`: Build system changes
+- `ci`: CI/CD changes
+- `chore`: Other changes (maintenance, etc.)
+
+**Examples**:
+
+```bash
+feat: add user authentication endpoint
+fix: resolve database connection timeout
+docs: update API documentation
+```
+
+### Versioning and Changelog
+
+The project uses `standard-version` for automated versioning and changelog generation:
+
+```bash
+# Generate a new version (automatically detects version bump)
+npm run release
+
+# Generate a specific version type
+npm run release:patch  # 1.0.0 → 1.0.1
+npm run release:minor  # 1.0.0 → 1.1.0
+npm run release:major  # 1.0.0 → 2.0.0
+```
+
+This will:
+
+1. Bump version in `package.json`
+2. Generate/update `CHANGELOG.md`
+3. Create a git commit
+4. Create a git tag
+
 ### Example Test
 
 ```typescript
@@ -533,7 +620,7 @@ Configure health check endpoint in your orchestration tool:
 
 ```yaml
 healthcheck:
-  test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+  test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/health']
   interval: 30s
   timeout: 10s
   retries: 3
@@ -548,12 +635,16 @@ healthcheck:
 - **Quick Start Guide**: [docs/QUICKSTART.md](docs/QUICKSTART.md)
 - **API Examples**: [docs/EXAMPLES.md](docs/EXAMPLES.md)
 - **Project Index**: [docs/PROJECT_INDEX.md](docs/PROJECT_INDEX.md)
+- **Contributing Guide**: [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)
+- **CI/CD Workflows**: [docs/WORKFLOWS.md](docs/WORKFLOWS.md)
 
 ## 🤝 Contributing
 
+For detailed contribution guidelines, see [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)
+
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/new-feature`
-3. Commit changes: `git commit -am 'Add new feature'`
+3. Commit changes using commitizen: `npm run commit`
 4. Push to branch: `git push origin feature/new-feature`
 5. Submit a pull request
 
@@ -563,11 +654,13 @@ healthcheck:
 - Maintain 90%+ test coverage
 - Update documentation
 - Follow TypeScript best practices
-- Use conventional commits
+- Use conventional commits (use `npm run commit`)
+- Ensure all git hooks pass (linting, formatting, tests)
+- Run `npm run format` before committing
 
 ## 📝 License
 
-MIT License - see LICENSE file for details
+Apache License 2.0 - see LICENSE file for details
 
 ## 🔧 Troubleshooting
 
@@ -598,8 +691,16 @@ MIT License - see LICENSE file for details
 ## 📞 Support
 
 For questions or issues:
+
 - Create an issue in the repository
-- Contact: support@example.com
+
+## 👨‍💻 Author
+
+**José Eduardo Trindade E Marques**
+
+- Company: AuronForge 🚀
+- Email: edu.temarques@gmail.com
+- LinkedIn: [linkedin.com/in/edu-marques29](https://linkedin.com/in/edu-marques29)
 
 ---
 

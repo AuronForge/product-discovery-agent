@@ -128,10 +128,7 @@ describe('ProductDiscoveryController', () => {
 
   describe('health', () => {
     it('should return health status', () => {
-      controller.health(
-        mockRequest as Request,
-        mockResponse as Response
-      );
+      controller.health(mockRequest as Request, mockResponse as Response);
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith(
@@ -144,10 +141,7 @@ describe('ProductDiscoveryController', () => {
     });
 
     it('should return ISO timestamp', () => {
-      controller.health(
-        mockRequest as Request,
-        mockResponse as Response
-      );
+      controller.health(mockRequest as Request, mockResponse as Response);
 
       const callArgs = (mockResponse.json as jest.Mock).mock.calls[0][0];
       const timestamp = callArgs.timestamp;

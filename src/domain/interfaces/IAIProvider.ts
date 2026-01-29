@@ -1,4 +1,8 @@
-import { ProductDiscoverySolution, ProductDiscoveryRequest, LanguageCode } from '../models/ProductDiscovery';
+import {
+  ProductDiscoverySolution,
+  ProductDiscoveryRequest,
+  LanguageCode
+} from '../models/ProductDiscovery';
 
 /**
  * Interface for AI provider implementations
@@ -10,5 +14,8 @@ export interface IAIProvider {
    * @param language - Detected language for response
    * @returns Promise with the generated solution
    */
-  generateDiscovery(request: ProductDiscoveryRequest, language: LanguageCode): Promise<ProductDiscoverySolution>;
+  generateDiscovery(
+    request: ProductDiscoveryRequest,
+    language: LanguageCode
+  ): Promise<ProductDiscoverySolution>;
 }

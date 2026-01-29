@@ -25,10 +25,14 @@ export const createApp = (): Express => {
   });
 
   // Swagger documentation
-  app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
-    customCss: '.swagger-ui .topbar { display: none }',
-    customSiteTitle: 'Product Discovery Agent API'
-  }));
+  app.use(
+    '/docs',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec, {
+      customCss: '.swagger-ui .topbar { display: none }',
+      customSiteTitle: 'Product Discovery Agent API'
+    })
+  );
 
   // Swagger JSON endpoint
   app.get('/swagger.json', (_req, res) => {
@@ -41,19 +45,20 @@ export const createApp = (): Express => {
   const productDiscoveryController = container.productDiscoveryController;
 
   // API routes
-  app.use('/api', createProductDiscoveryRoutes(productDiscoveryController));
+  app.use('/api/v1', createProductDiscoveryRoutes(productDiscoveryController));
 
   // Root endpoint
   app.get('/', (_req, res) => {
     res.json({
       name: 'Product Discovery Agent API',
       version: '1.0.0',
-      description: 'A backend agent that performs macro-level product discovery using AI',
+      description:
+        'A backend agent that performs macro-level product discovery using AI',
       endpoints: {
         documentation: '/docs',
         swagger: '/swagger.json',
-        discovery: 'POST /api/discovery',
-        health: 'GET /api/health'
+        discovery: 'POST /api/v1/discovery',
+        health: 'GET /api/v1/health'
       }
     });
   });
@@ -65,8 +70,8 @@ export const createApp = (): Express => {
       message: `Route ${req.method} ${req.path} not found`,
       availableRoutes: {
         documentation: '/docs',
-        discovery: 'POST /api/discovery',
-        health: 'GET /api/health'
+        discovery: 'POST /api/v1/discovery',
+        health: 'GET /api/v1/health'
       }
     });
   });
