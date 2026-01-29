@@ -635,8 +635,12 @@ healthcheck:
 - **Quick Start Guide**: [docs/QUICKSTART.md](docs/QUICKSTART.md)
 - **API Examples**: [docs/EXAMPLES.md](docs/EXAMPLES.md)
 - **Project Index**: [docs/PROJECT_INDEX.md](docs/PROJECT_INDEX.md)
+- **Contributing Guide**: [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)
+- **CI/CD Workflows**: [docs/WORKFLOWS.md](docs/WORKFLOWS.md)
 
 ## 🤝 Contributing
+
+For detailed contribution guidelines, see [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/new-feature`
