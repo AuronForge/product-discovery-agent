@@ -93,65 +93,96 @@ jobs:
           retention-days: 7
 
   deploy-staging:
-    name: Deploy to Staging
+    name: Deploy to Staging (Vercel Preview)
     runs-on: ubuntu-latest
     needs: build
     if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
     environment:
       name: staging
-      url: https://staging.yourdomain.com
+      url: ${{ steps.vercel-deploy.outputs.preview-url }}
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          name: dist
-          path: dist/
+          node-version: '20'
+          cache: 'npm'
       
-      - name: Deploy to Staging
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      
+      - name: Build Project Artifacts
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      
+      - name: Deploy to Vercel Preview
+        id: vercel-deploy
         run: |
-          echo "Deploying to staging environment..."
-          # Add your deployment commands here
-          # Examples:
-          # - Deploy to Heroku: git push heroku develop:main
-          # - Deploy to AWS: aws s3 sync dist/ s3://your-bucket
-          # - Deploy to Docker Registry: docker push your-registry/app:staging
-          # - Deploy via SSH: rsync -avz dist/ user@staging-server:/app
+          DEPLOYMENT_URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          echo "preview-url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+          echo "Deployed to: $DEPLOYMENT_URL"
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
   deploy-production:
-    name: Deploy to Production
+    name: Deploy to Production (Vercel)
     runs-on: ubuntu-latest
     needs: build
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment:
       name: production
-      url: https://yourdomain.com
+      url: https://product-discovery-agent.vercel.app
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          name: dist
-          path: dist/
+          node-version: '20'
+          cache: 'npm'
       
-      - name: Deploy to Production
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      
+      - name: Deploy to Vercel Production
+        id: vercel-deploy
         run: |
-          echo "Deploying to production environment..."
-          # Add your deployment commands here
-          # Examples:
-          # - Deploy to Heroku: git push heroku main
-          # - Deploy to AWS: aws s3 sync dist/ s3://your-bucket
-          # - Deploy to Docker Registry: docker push your-registry/app:latest
-          # - Deploy via SSH: rsync -avz dist/ user@prod-server:/app
+          DEPLOYMENT_URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          echo "production-url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+          echo "Deployed to: $DEPLOYMENT_URL"
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
       
       - name: Create Release Notes
         if: success()
         run: |
-          echo "Deployment successful!"
-          echo "Version: $(node -p "require('./package.json').version")"
+          echo "✅ Deployment successful!"
+          echo "🚀 Production URL: https://product-discovery-agent.vercel.app"
+          echo "📦 Version: $(node -p "require('./package.json').version")"
