@@ -5,8 +5,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install dependencies (ignore scripts to skip husky)
+RUN npm ci --ignore-scripts
 
 # Copy source code
 COPY tsconfig.json ./
@@ -23,8 +23,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install only production dependencies
-RUN npm ci --only=production && npm cache clean --force
+# Install only production dependencies (ignore scripts to skip husky)
+RUN npm ci --only=production --ignore-scripts && npm cache clean --force
 
 # Copy built application from builder
 COPY --from=builder /app/dist ./dist
