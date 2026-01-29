@@ -3,6 +3,7 @@ module.exports = {
   testEnvironment: 'node',
   roots: ['<rootDir>/src'],
   testMatch: ['**/__tests__/**/*.ts', '**/?(*.)+(spec|test).ts'],
+  silent: true,
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.d.ts',
@@ -29,9 +30,7 @@ module.exports = {
   transformIgnorePatterns: [
     'node_modules/(?!(franc|trigram-utils|n-gram|collapse-white-space)/)'
   ],
-  globals: {
-    'ts-jest': {
-      isolatedModules: true
-    }
+  transform: {
+    '^.+\.ts$': ['ts-jest', {}]
   }
 };
