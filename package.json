@@ -6,7 +6,6 @@
   "scripts": {
     "build": "tsc",
     "commit": "cz",
-    "dev": "tsx watch src/index.ts",
     "format": "prettier --write \"src/**/*.{ts,json,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,json,md}\"",
     "lint": "eslint src --ext .ts",
@@ -16,7 +15,7 @@
     "release:major": "standard-version --release-as major",
     "release:minor": "standard-version --release-as minor",
     "release:patch": "standard-version --release-as patch",
-    "start": "node dist/index.js",
+    "start": "tsx watch src/index.ts",
     "test": "jest",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch",
@@ -32,6 +31,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@azure/openai": "^1.0.0-beta.12",
+    "agent-banner-library": "^0.0.5",
     "better-sqlite3": "^12.6.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",

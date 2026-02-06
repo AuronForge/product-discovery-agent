@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import { printAgentBanner } from 'agent-banner-library';
 import { createApp } from './app';
 
 // Load environment variables
@@ -13,19 +14,30 @@ const startServer = () => {
   const app = createApp();
 
   app.listen(PORT, () => {
-    console.log('════════════════════════════════════════════════════════');
-    console.log('🚀 Product Discovery Agent API');
-    console.log('════════════════════════════════════════════════════════');
-    console.log(`📡 Server running on: http://localhost:${PORT}`);
-    console.log(`📚 API Documentation: http://localhost:${PORT}/docs`);
-    console.log(`🏥 Health Check: http://localhost:${PORT}/api/v1/health`);
-    console.log(
-      `🔍 Discovery Endpoint: POST http://localhost:${PORT}/api/v1/discovery`
-    );
-    console.log('════════════════════════════════════════════════════════');
-    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`Timestamp: ${new Date().toISOString()}`);
-    console.log('════════════════════════════════════════════════════════');
+    printAgentBanner({
+      agentName: 'Product Discovery Agent API',
+      baseUrl: `http://localhost:${PORT}`,
+      prefix: '/',
+      docsPath: '/docs',
+      healthPath: '/api/v1/health',
+      endpoints: [
+        {
+          method: 'POST',
+          path: '/api/v1/discovery',
+          description: 'Run product discovery'
+        },
+        {
+          method: 'GET',
+          path: '/api/v1/discoveries',
+          description: 'List discoveries'
+        },
+        {
+          method: 'GET',
+          path: '/api/v1/discoveries/:id',
+          description: 'Get discovery by id'
+        }
+      ]
+    });
   });
 };
 
